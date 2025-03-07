@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLAY Clothing | Premium Streetwear</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Urbanist:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #ff0000;
+            --dark: #111111;
+        }
+        
+        body {
+            font-family: 'Urbanist', sans-serif;
+            background-color: var(--dark);
+            color: white;
+        }
+
+        .hero-title {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            bottom: -2px;
+            left: 0;
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        .cart-overlay {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black bg-opacity-90 px-4 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-3xl font-bold text-white">SLAY</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#" class="nav-link text-white">Home</a>
+                <a href="#shop" class="nav-link text-white">Shop</a>
+                <a href="#lookbook" class="nav-link text-white">Lookbook</a>
+                <a href="#about" class="nav-link text-white">About</a>
+            </div>
+            <div class="flex space-x-4 items-center">
+                <button class="text-white" onclick="toggleCart()">
+                    <i class="bi bi-bag text-2xl"></i>
+                </button>
+                <button class="md:hidden text-white" onclick="toggleMenu()">
+                    <i class="bi bi-list text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-black bg-opacity-95 z-40 hidden">
+        <div class="flex flex-col items-center justify-center h-full space-y-8">
+            <a href="#" class="text-white text-2xl">Home</a>
+            <a href="#shop" class="text-white text-2xl">Shop</a>
+            <a href="#lookbook" class="text-white text-2xl">Lookbook</a>
+            <a href="#about" class="text-white text-2xl">About</a>
+            <button onclick="toggleMenu()" class="text-white">
+                <i class="bi bi-x text-4xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="h-screen flex items-center justify-center relative overflow-hidden">
+        <video autoplay muted loop class="absolute w-full h-full object-cover">
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-fashion-model-walking-on-a-catwalk-44677-large.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="relative text-center animate-slide-in">
+            <h1 class="hero-title text-6xl md:text-8xl font-bold mb-6">SLAY</h1>
+            <p class="text-xl md:text-2xl mb-8">REDEFINING STREETWEAR</p>
+            <a href="#shop" class="bg-red-600 text-white px-8 py-3 text-lg hover:bg-red-700 transition duration-300">
+                SHOP NOW
+            </a>
+        </div>
+    </section>
+
+    <!-- Shop Section -->
+    <section id="shop" class="py-20 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold mb-12 text-center">LATEST DROPS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Overlay -->
+    <div id="cartOverlay" class="fixed inset-0 bg-black bg-opacity-50 cart-overlay hidden z-50">
+        <div class="absolute right-0 top-0 h-full w-full md:w-96 bg-black p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Your Cart</h3>
+                <button onclick="toggleCart()" class="text-white">
+                    <i class="bi bi-x text-3xl"></i>
+                </button>
+            </div>
+            <div id="cartItems" class="space-y-4">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+            <div class="absolute bottom-0 left-0 w-full p-6">
+                <div class="flex justify-between mb-4">
+                    <span>Total:</span>
+                    <span id="cartTotal">$0.00</span>
+                </div>
+                <button class="w-full bg-red-600 text-white py-3 hover:bg-red-700 transition duration-300">
+                    CHECKOUT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample product data
+        const products = [
+            {
+                id: 1,
+                name: "Urban Beast Hoodie",
+                price: 89.99,
+                image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                id: 2,
+                name: "Street King Tee",
+                price: 39.99,
+                image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                id: 3,
+                name: "Graffiti Cap",
+                price: 29.99,
+                image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            }
+        ];
+
+        let cart = [];
+
+        // Initialize products
+        function initializeProducts() {
+            const shopContainer = document.querySelector('#shop .grid');
+            shopContainer.innerHTML = products.map(product => `
+                <div class="product-card bg-gray-900 rounded-lg overflow-hidden">
+                    <div class="relative overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="product-image w-full h-64 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">${product.name}</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg">$${product.price}</span>
+                            <button onclick="addToCart(${product.id})" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCart();
+            toggleCart(true);
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            cartItems.innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between bg-gray-900 p-4 rounded">
+                    <div class="flex items-center">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                        <div class="ml-4">
+                            <h4 class="font-bold">${item.name}</h4>
+                            <p>$${item.price}</p>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart('${item.id}')" class="text-red-500">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            cartTotal.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        function toggleCart(show = null) {
+            const cart = document.getElementById('cartOverlay');
+            cart.classList.toggle('hidden', show === false);
+            cart.classList.toggle('hidden', show === null ? undefined : !show);
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeProducts();
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
